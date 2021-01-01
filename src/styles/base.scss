@@ -1,0 +1,42 @@
+$header-color: #3AAFB9; //457b9d
+$background-color: #1B2F33;//1D3557
+$green-button-color: #99D17B;
+@mixin center() {
+    margin-left: auto;
+    margin-right: auto;
+}
+body {
+    background-color: $background-color;
+}
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+.original {
+    width: 1902px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 3;
+
+    &__pic {
+        z-index: 3;
+        object-fit: contain;
+    }
+
+    &__button {
+        z-index: 4;
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        top: 30px;
+        right: 40px;
+        font-size: 120px;
+        outline: none;
+        background-color: transparent;
+        text-decoration: none;
+        cursor: pointer;
+        color: white;
+        text-shadow: black 12px 12px 10px;
+        border: none;
+    }
+}
