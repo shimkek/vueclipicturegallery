@@ -1,0 +1,13 @@
+@media screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 1600px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+
+.maximized__img {
+    margin-top: 5%;
+}
+.gallery {
+    width: 80%;
+    justify-content: center;
+}
+}

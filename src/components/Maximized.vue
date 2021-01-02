@@ -20,7 +20,7 @@ export default {
 <style lang="scss">
 $green-button-color: #99D17B;
 .maximized {
-    background-color: rgba(15, 15, 15, 70%);
+    background-color: rgba(15, 15, 15, 80%);
     position: fixed;
     top: 10%;
     bottom: 0px;
