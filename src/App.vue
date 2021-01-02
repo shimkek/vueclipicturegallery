@@ -56,7 +56,8 @@ export default {
       this.maximizedPoster.name = poster.name
       this.maximizedPoster.coordinates = poster.coordinates
       this.maximizedPoster.district = poster.district
-      this.maximizedPoster.src = poster.src
+      const bigPosterSrc = poster.src.replace(/small/gi, 'big')
+      this.maximizedPoster.src = bigPosterSrc
       this.isMaximized = true
     },
     hideMaximized () {
