@@ -1,31 +1,33 @@
 <template>
-    <div class="gallery__poster" @click="maximize">
-    <img class="gallery__img" :src="this.poster.preview">
-    </div>
+  <div class="gallery__poster" @click="maximize">
+    <img class="gallery__img" :src="poster.preview" />
+  </div>
 </template>
 
 <script>
 export default {
   props: {
-    poster: {}
-  },
-  data () {
-    return {
+    poster: {
+      type: Object,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true
     }
+  },
+  emits: ["maximize-poster"],
+  data() {
+    return {};
   },
   methods: {
-    maximize () {
-      const poster = {
-        name: this.poster.name,
-        coordinates: this.poster.coordinates_geo_object,
-        district: this.poster.district,
-        src: this.poster.preview
-      }
-      console.log(poster)
-      this.$emit('maximize-poster', poster)
+    maximize() {
+      const index = this.index;
+      console.log(index);
+      this.$emit("maximize-poster", index);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

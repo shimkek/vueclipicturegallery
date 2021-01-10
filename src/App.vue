@@ -1,84 +1,94 @@
 <template>
-    <header class="header">
-        <div class="header__contents">
-            <a class="header__logo" href="./index.html">
-                <img class="header__pic" src="./icons/android-chrome-192x192.png" alt="logo">
-            </a>
-            <p class="header__name">Gallery</p>
-        </div>
-    </header>
-
-    <div class="gallery" :class="{gallery_minimized : isMaximized}">
-        <gallery-poster v-for="(poster, index) in gallery" :poster="poster" :key="index" @maximize-poster="showMaximized"></gallery-poster>
+  <header class="header">
+    <div class="header__contents">
+      <a class="header__logo">
+        <img
+          class="header__pic"
+          src="./icons/android-chrome-192x192.png"
+          alt="logo"
+        />
+      </a>
+      <p class="header__name">Gallery</p>
     </div>
+  </header>
 
-    <div class="loadmore" :class="{loadmore_minimized : isMaximized}">
-        <button class="loadmore__button" @click="fetchImages">
-            ↻ Load more
-        </button>
-    </div>
+  <div class="gallery">
+    <gallery-poster
+      v-for="(poster, index) in gallery"
+      :key="poster.id"
+      :poster="poster"
+      :index="index"
+      @maximize-poster="showMaximized"
+    ></gallery-poster>
+  </div>
 
-    <maximized v-if="isMaximized" :poster="maximizedPoster" @hide-maximized-event="hideMaximized"></maximized>
+  <div v-if="currentPage < lastPage" class="loadmore">
+    <button class="loadmore__button" @click="fetchImages">
+      ↻ Load more
+    </button>
+  </div>
 
+  <maximized-poster
+    v-if="isMaximized"
+    :poster="gallery[activeImageIndex]"
+    @hide-maximized="hideMaximized"
+  ></maximized-poster>
 </template>
 
 <script>
-import GalleryPoster from './components/GalleryPoster.vue'
-import Maximized from './components/Maximized.vue'
+import GalleryPoster from "./components/GalleryPoster.vue";
+import MaximizedPoster from "./components/MaximizedPoster.vue";
 
 export default {
-  data () {
-    return {
-      pictureQuntity: 0,
-      page: 0,
-      gallery: [],
-      isMaximized: false,
-      maximizedPoster: {
-        name: null,
-        district: null,
-        coordinates: null,
-        src: null
-      }
-    }
-  },
-  methods: {
-    async fetchImages () {
-      this.page++
-      this.pictureQuntity = this.pictureQuntity + 6
-      const response = await fetch(this.fetchUrl)
-      const posters = await response.json()
-      console.log(posters)
-      for (let i = 0; i < posters.data.length; i++) {
-        this.gallery.push(posters.data[i])
-      }
-    },
-    showMaximized (poster) {
-      this.maximizedPoster.name = poster.name
-      this.maximizedPoster.coordinates = poster.coordinates
-      this.maximizedPoster.district = poster.district
-      const bigPosterSrc = poster.src.replace(/small/gi, 'big')
-      this.maximizedPoster.src = bigPosterSrc
-      this.isMaximized = true
-    },
-    hideMaximized () {
-      this.isMaximized = false
-    }
-  },
-  computed: {
-    fetchUrl () {
-      return 'https://okolo.city/api/v1/subjects?only_paid=0&page=' + this.page + '&per_page=6' + '&pagination_hash_random=1'
-    }
-  },
-  async mounted () {
-    this.fetchImages()
-  },
   components: {
     GalleryPoster,
-    Maximized
+    MaximizedPoster
+  },
+  data() {
+    return {
+      currentPage: 0,
+      lastPage: undefined,
+      gallery: [],
+      isMaximized: false,
+      activeImageIndex: undefined
+    };
+  },
+  computed: {
+    fetchUrl() {
+      return (
+        "https://okolo.city/api/v1/subjects?only_paid=0&page=" +
+        this.nextPage +
+        "&per_page=6" +
+        "&pagination_hash_random=1"
+      );
+    },
+    nextPage() {
+      return this.currentPage + 1;
+    }
+  },
+  async mounted() {
+    this.fetchImages();
+  },
+  methods: {
+    async fetchImages() {
+      const response = await fetch(this.fetchUrl);
+      const posters = await response.json();
+      console.log(posters);
+      this.gallery = this.gallery.concat(posters.data);
+      this.lastPage = posters.meta.last_page;
+      this.currentPage = posters.meta.current_page;
+    },
+    showMaximized(index) {
+      this.activeImageIndex = index;
+      this.isMaximized = true;
+    },
+    hideMaximized() {
+      this.isMaximized = false;
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">
-@import './styles/index.scss';
+@import "./styles/index.scss";
 </style>
